@@ -1,0 +1,32 @@
+pipeline {
+    agent any // Specifies that the build can run on any available agent
+
+    stages {
+        stage('Clean Workspace') { // Optional stage to ensure a clean build environment
+            steps {
+                sh 'rm -rf build'
+            }
+        }
+        
+        stage('Configure CMake') {
+            steps {
+                // Create a 'build' directory and run cmake to generate build scripts (e.g., Makefiles)
+                sh 'cmake -B build -S .'
+            }
+        }
+        
+        stage('Build Project') {
+            steps {
+                // Run the build using the generated scripts in the 'build' directory
+                sh 'cmake --build build'
+            }
+        }
+
+        stage('Test Project') {
+            steps {
+                // Run tests using CTest within the build directory
+                sh 'cd build && ctest'
+            }
+        }
+    }
+}
